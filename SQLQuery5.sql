@@ -1,4 +1,4 @@
-use Hotel
+﻿use Hotel
 
 create table HotelInformation (
 	Id int IDENTITY(1,1) PRIMARY KEY,
@@ -49,8 +49,10 @@ create table Guests (
 	DateOfBirth date NOT NULL CHECK(DateOfBirth < CURRENT_TIMESTAMP),
 	Gender nvarchar(6) NOT NULL CHECK(Gender = 'Male' OR Gender = 'Female'),
 	Adress nvarchar(200) NOT NULL,
-	AccommodationId int FOREIGN KEY REFERENCES Accommodation(Id) NOT NULL
+	AccommodationId int
 )
+alter table Guests add constraint GuestKey FOREIGN KEY (AccommodationId) REFERENCES Accommodation(Id) ON DELETE CASCADE
+
 create table Buyer (
 	Id int IDENTITY(1,1) PRIMARY KEY,
 	FirstName nvarchar(100) NOT NULL,
@@ -59,30 +61,28 @@ create table Buyer (
 )
 
 create table Receipt(
-	AccommodationId int FOREIGN KEY REFERENCES Accommodation(Id) NOT NULL,
+	AccommodationId int FOREIGN KEY REFERENCES Accommodation(Id) NOT NULL UNIQUE(AccommodationId),
 	BuyerId int FOREIGN KEY REFERENCES Buyer(Id) NOT NULL,
-	TotalPrice int NOT NULL,
+	TotalPrice int,
 	DateOfIssue date NOT NULL,
 	CONSTRAINT ReceiptId PRIMARY KEY(AccommodationId, BuyerId)
 )
-alter table Receipt add constraint AccommodationResctriction UNIQUE(AccommodationId)
-alter table Receipt alter column TotalPrice int
 
 insert into HotelInformation(Name, Adress, OwnerName, PhoneNumber, TelefoneNumber, Email)
 values
-('Hotel A','Adresa 1', 'Ivan Ivi?', '091-391-2000', '021-320-456', 'hotelA@gmail.com'),
-('Hotel B','Adresa 2', 'Ivan Ivi?', '091-392-3000', '021-453-777', 'hotelB@gmail.com'),
+('Hotel A','Adresa 1', 'Ivan Ivić', '091-391-2000', '021-320-456', 'hotelA@gmail.com'),
+('Hotel B','Adresa 2', 'Ivan Ivić', '091-392-3000', '021-453-777', 'hotelB@gmail.com'),
 ('Hotel C','Adresa 3', 'Lucia Vukorepa', '091-393-4000', '021-431-555', 'hotelC@gmail.com'),
-('Hotel D','Adresa 4', 'Matija Mati?', '091-394-5000', '021-312-222', 'hotelD@gmail.com'),
+('Hotel D','Adresa 4', 'Matija Matić', '091-394-5000', '021-312-222', 'hotelD@gmail.com'),
 ('Hotel E','Adresa 5', 'Ivan Belas', '091-391-2000', '021-901-111', 'hotelE@gmail.com')
 
 insert into Employers(OIB, FirstName, LastName, DateOfBirth, Gender, Adress, TypeOfEmployment, HourlyPay, HotelId)
 values
-('12345678911', 'Ante', 'Anti?', '2001-01-01', 'Male', 'Adresa A', 'Recepcionist', 30, 1),
-('12345678922', 'Mate', 'Mati?', '2000-02-02', 'Male', 'Adresa B', 'Portir', 26, 2),
-('12345678933', 'Marija', 'Mari?', '1998-03-03', 'Female', 'Adresa C', '?ista?ica', 30, 2),
-('12345678944', 'Ana', 'Ani?', '1998-04-04', 'Female', 'Adresa D', '?ista?ica', 30, 3),
-('12345678955', 'Kre�o', 'Kre�i?', '1995-06-06', 'Male', 'Adresa E', 'Portir', 26, 1)
+('12345678911', 'Ante', 'Antić', '2001-01-01', 'Male', 'Adresa A', 'Recepcionist', 30, 1),
+('12345678922', 'Mate', 'Matić', '2000-02-02', 'Male', 'Adresa B', 'Portir', 26, 2),
+('12345678933', 'Marija', 'Marić', '1998-03-03', 'Female', 'Adresa C', 'Čistačica', 30, 2),
+('12345678944', 'Ana', 'Anić', '1998-04-04', 'Female', 'Adresa D', 'Čistačica', 30, 3),
+('12345678955', 'Krešo', 'Krešić', '1995-06-06', 'Male', 'Adresa E', 'Portir', 26, 1)
 insert into HotelRooms(Number, Category, AccommodationPrice, Capacity, HotelId)
 values
 (1, 'Kategorija A', 200, 4, 2),
@@ -90,6 +90,7 @@ values
 (3, 'Kategorija E', 150, 3, 3),
 (4, 'Kategorija C', 100, 2, 3),
 (5, 'Kategorija A', 200, 4, 1)
+
 
 insert into Accommodation(DateOfArrival, TimeOfArrival, DateOfDeparture, TimeOfDeparture, TypeOfService, PriceOfService, HotelRoomsId)
 values
@@ -101,19 +102,19 @@ values
 
 insert into Guests(Id, FirstName, LastName, DateOfBirth, Gender, Adress, AccommodationId)
 values
-('12345678966', 'Vedran', 'Vderi?', '2001-01-09', 'Male', 'Adresa F', 4),
-('12345678977', 'Horvat', 'Horvati?', '1993-02-05', 'Male', 'Adresa G', 4),
-('12345678988', 'Marijana', 'Mandi?', '1980-07-03', 'Female', 'Adresa N', 2),
-('12345678999', 'Ana', 'Ani?', '1991-12-04', 'Female', 'Adresa M', 1),
-('12345678912', 'Kre�o', 'Kristi?', '1990-11-10', 'Male', 'Adresa O', 3)
+('12345678966', 'Vedran', 'Vderić', '2001-01-09', 'Male', 'Adresa F', 4),
+('12345678977', 'Horvat', 'Horvatić', '1993-02-05', 'Male', 'Adresa G', 4),
+('12345678988', 'Marijana', 'Mandić', '1980-07-03', 'Female', 'Adresa N', 2),
+('12345678999', 'Ana', 'Anić', '1991-12-04', 'Female', 'Adresa M', 1),
+('12345678912', 'Krešo', 'Kristić', '1990-11-10', 'Male', 'Adresa O', 3)
 
 insert into Buyer(FirstName, LastName, Email)
 values
-('Sanja', 'Sanji?', 'sanjasanjic@gmail.com'),
-('Sanja', 'Sanji?', 'sanjasanjic@gmail.com'),
-('Marko', 'Marki?', 'markomarkic@gmail.com'),
-('Izabela', 'Izi?', 'izabelaizic@gmail.com'),
-('Sani', 'Sani?', 'sanisanic@gmail.com')
+('Sanja', 'Sanjić', 'sanjasanjic@gmail.com'),
+('Sanja', 'Sanjić', 'sanjasanjic@gmail.com'),
+('Marko', 'Markić', 'markomarkic@gmail.com'),
+('Izabela', 'Izić', 'izabelaizic@gmail.com'),
+('Sani', 'Sanić', 'sanisanic@gmail.com')
 
 insert into Receipt(AccommodationId, BuyerId, TotalPrice, DateOfIssue) 
 values
@@ -127,12 +128,15 @@ update Receipt
 set Receipt.TotalPrice = (HotelRooms.AccommodationPrice + Accommodation.PriceOfService) * DATEDIFF(day, Accommodation.DateOfArrival, Accommodation.DateOfDeparture)
 from Receipt inner join (HotelRooms inner join Accommodation on HotelRooms.Id = Accommodation.HotelRoomsId) on Receipt.AccommodationId = Accommodation.Id
 
+--
+
 select Number, Category, AccommodationPrice, Capacity
 from HotelInformation inner join HotelRooms 
 on HotelInformation.Id = HotelRooms.HotelId
 where HotelInformation.Name = 'Hotel B'
 order by(HotelRooms.Number)
 
+--
 
 select * 
 from HotelRooms
@@ -142,45 +146,55 @@ where CAST(Number as char) LIKE '1%'
 select FirstName, LastName
 from HotelInformation inner join Employers
 on HotelInformation.Id = Employers.HotelId
-where HotelId = 2 and Employers.TypeOfEmployment = '?ista?ica'
+where HotelId = 2 and Employers.TypeOfEmployment = 'Čistačica'
 
+--
 
 select * 
 from Receipt
 where DateOfIssue > '2020-12-01' and TotalPrice > 1000
 
+--
 
 select * 
 from Accommodation
 where DateOfArrival < CURRENT_TIMESTAMP and DateOfDeparture > CURRENT_TIMESTAMP
 
+--
 
-delete 
-from Accommodation
+delete Guests
+from Accommodation inner join Guests on Accommodation.Id = Guests.AccommodationId
 where DateOfDeparture < '2020-01-01'
 
+delete
+from Accommodation 
+where DateOfDeparture < '2020-01-01'
+--
 
 update HotelRooms
 set HotelRooms.Capacity = 4
 from HotelInformation inner join HotelRooms on HotelInformation.Id = HotelRooms.HotelId
 where HotelInformation.Id = 2 and HotelRooms.Capacity = 3
 
+--
 
 select DateOfArrival, TimeOfArrival, DateOfDeparture, TimeOfDeparture
 from Accommodation inner join HotelRooms on Accommodation.HotelRoomsId = HotelRooms.Id
 where HotelRooms.Id = 3
 order by (DateOfArrival)
 
+--
 
 select DateOfArrival, TimeOfArrival, DateOfDeparture, TimeOfDeparture, TypeOfService
 from Accommodation inner join (HotelInformation inner join HotelRooms on  HotelInformation.Id = HotelRooms.HotelId) on Accommodation.HotelRoomsId = HotelRooms.Id
 where (Accommodation.TypeOfService = 'PuniPansion' or Accommodation.TypeOfService = 'PoluPansion') and HotelInformation.Id = 3
 
+--
 
 insert into Employers(OIB, FirstName, LastName, DateOfBirth, Gender, Adress, TypeOfEmployment, HourlyPay, HotelId)
 values
-('12345678923', 'Mirko', 'Mirki?', '1997-11-20', 'Male', 'Adresa J', 'Sobna polsuga', 40, 1),
-('12345678945', 'Nina', 'Nini?', '1997-11-03', 'Female', 'Adresa H', 'Sobna posluga', 40, 4)
+('12345678923', 'Mirko', 'Mirkić', '1997-11-20', 'Male', 'Adresa J', 'Sobna polsuga', 40, 1),
+('12345678945', 'Nina', 'Ninič', '1997-11-03', 'Female', 'Adresa H', 'Sobna posluga', 40, 4)
 
 update Employers
 set TypeOfEmployment = 'Recepcionarka'
